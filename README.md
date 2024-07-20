@@ -18,21 +18,21 @@
 
 	    	CF:  Código do Fornecedor Metalkraft no cliente
 
-    		CJ:  Dia e ano no calendário Juliano
+		CJ:  Dia e ano no calendário Juliano
 
-    		SQ: Sequencial.
+		SQ: Sequencial.
 
-    		T1: Um texto fixo que faça parte do número serial.
+		T1: Um texto fixo que faça parte do número serial.
 
-    		T2: Um segundo texto fixo que faça parte do número serial
+		T2: Um segundo texto fixo que faça parte do número serial
+  
+		RD: A revisão do desenho do Produto.
 
-    		RD: A revisão do desenho do Produto.
+		SH: o turno de fabricação (SHIFT) .
 
-    		SH: o turno de fabricação (SHIFT) .
+		LN: Linha de Produção do Produto.
 
-    		LN: Linha de Produção do Produto.
-
-        	Ex: PN+CF+CJ+SQ+T1+T2+RD+SH+LN
+		Ex: PN+CF+CJ+SQ+T1+T2+RD+SH+LN
     
 2 - Funcionalidades
 
