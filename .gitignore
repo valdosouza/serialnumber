@@ -2,6 +2,6 @@ env.pas
 # Ignora pastas recovery e history em qualquer nível
 __recovery/
 __history/
-
+ModelSupport_serial_number
 Win32
 
