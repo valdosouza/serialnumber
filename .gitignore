@@ -1,23 +1,7 @@
 env.pas
-__recovery
-__history
-bin
-controller/__recovery
-controller/__history
-doc
-framework/__recovery
-framework/__history
-helper/__recovery
-helper/__history
-model/__recovery
-model/__history
-model/__recovery
-model/__history
-parameter/__recovery
-parameter/__history
-repository/__recovery
-repository/__history
-view/__recovery
-view/__history
+# Ignora pastas recovery e history em qualquer nível
+__recovery/
+__history/
+
 Win32
 

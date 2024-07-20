@@ -1,0 +1,29 @@
+Dicas de Preenchimento para validação de Integridade:
+Exemplo: PN+CF+CJ+SQ  Comprimento Seq 6
+PN=Part Number
+CF=Código do Fornecedor Metalkraft no cliente
+CJ: Dia e ano no calendário Juliano
+SQ=Sequencial
+T1 : Um texto fixo que faça parte do datamatrix
+T2 : Um segundo texto fixo que faça parte do datamatrix
+RD : A revisão do desenho do Produto
+SH : o turno de fabricação (SHIFT)  -
+LN : Linha de Produção do Produto
+
+Para os casos em que a um texto fixo correspOnde à totalidade do DataMatrix, basta descrevê-lo no campo Máscara Datamatrix. Ex:FIAT
+
+
+
+Excemplo:
+PN+
+RD+
+CF+
+CJ+
+SH+  
+	Quando a mascara contiver SH - mostrar o campo turno e validar o preenchimento
+
+LN+  criando no cadastro da peça
+
+
+10-04-2024 - Alteração do Dia Juliano - 00:30
+11-04-2024 - Conversa com Roberson  - 09:14 - 09:59 - 45:00 - explicado as modificações
