@@ -4,5 +4,8 @@ __recovery/
 __history/
 ModelSupport_serial_number
 Win32
-bin
+bin/log/
+bin/temp/
+bin/log/serial_number.exe
+bin/log/serial_number.zip
 
