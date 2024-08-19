@@ -22,8 +22,6 @@ Type
     function GetPartNumberNoNorma:String;
     function GetPartNumberPF_901106:String;
     function GetPartNumberFPW_PTTSTR:String;
-
-
     function getDiaAnoJuliano:String;
     function GetSequence : Integer;
     procedure setFSerialLN(const Value: String);

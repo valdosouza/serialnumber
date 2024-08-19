@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Un_Base, Vcl.Menus, Vcl.ExtCtrls,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Un_Base, Vcl.Menus, Vcl.ExtCtrls,GenericOrm,
   ControllerSerialNumber, Vcl.Buttons, base_frame_list, lis_frame_product,
   Data.DB, Vcl.StdCtrls, Vcl.Grids, Vcl.DBGrids, Datasnap.DBClient,
   cad_img_product,th_record_serial_number, ComPort, FireDAC.Stan.Intf,
@@ -51,11 +51,12 @@ type
     procedure ComPortReceiveCallBack(Data: string);
     procedure listFrameProductDBLCB_ListaClick(Sender: TObject);
     procedure E_qtty_recordExit(Sender: TObject);
+    procedure ComPortPortClose(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
   private
     FRecordSerialNumber : TThRecordSerialNumber;
     FPortaAberta : Boolean;
     FProduct : TControllerProduct;
-
     procedure ConfigDEvice;
     procedure AbrirPortaCom;
     procedure FecharPortaCom;
@@ -68,7 +69,6 @@ type
     procedure EditionControler;
     procedure FinalizarOperacao(Sender: TObject);
     function VerificaEzCad2: Boolean;
-    procedure onterminateProcess(Sender: TObject);
   protected
     procedure CriarVariaveis;Override;
     procedure IniciaVariaveis;Override;
@@ -85,23 +85,31 @@ implementation
 
 {$R *.dfm}
 
-uses Un_Msg, cfg_device, env;
-
-
+uses Un_Msg, cfg_device, env, UnFunctions;
 
 { TTasSerialNumberRecord }
 
 procedure TTasSerialNumberRecord.AbrirPortaCom;
 begin
   ComPort.Port := ConfigFile('L','DEVICE','PORTA','');
-  ComPort.Open;
+  Try
+    ComPort.Open;
+  except
+    on E: Exception do
+      ShowMessage(E.Message);
+  end;
 end;
 
 procedure TTasSerialNumberRecord.Button1Click(Sender: TObject);
 begin
   if ValidateSeeImage then
     SeeImage;
+end;
 
+procedure TTasSerialNumberRecord.ComPortPortClose(Sender: TObject);
+begin
+  inherited;
+  FPortaAberta := False;
 end;
 
 procedure TTasSerialNumberRecord.ComPortPortOpen(Sender: TObject);
@@ -153,6 +161,9 @@ begin
     SB_Sair_0.Enabled   := False;
     Pnl_Processamento.Visible := True;
     Pnl_Processamento.Caption := 'Processamento: Iniciando....';
+    E_qtty_record.ReadOnly := True;
+    E_SH.ReadOnly := True;
+    E_LN.ReadOnly := True;
   End
   else
   Begin
@@ -161,6 +172,9 @@ begin
     SB_Stop.Enabled     := False;
     SB_Sair_0.Enabled   := true;
     Pnl_Processamento.Visible := False;
+    E_qtty_record.ReadOnly := False;
+    E_SH.ReadOnly := False;
+    E_LN.ReadOnly := False;
   End;
 end;
 
@@ -177,6 +191,7 @@ end;
 procedure TTasSerialNumberRecord.FinalizarOperacao(Sender: TObject);
 begin
   Try
+    DeletaArquivoNumeroSerial;
     EditionState := 'B';
     EditionControler;
     FecharPortaCom;
@@ -188,9 +203,26 @@ end;
 
 procedure TTasSerialNumberRecord.FinalizaVariaveis;
 begin
+  //Deleta o arquivo para garantir que a gravadora não vai ficar rodando.
+  DeletaArquivoNumeroSerial;
   FreeAndNil(FProduct);
   inherited;
 end;
+
+procedure TTasSerialNumberRecord.FormCloseQuery(Sender: TObject;
+  var CanClose: Boolean);
+begin
+  inherited;
+  if FRecordSerialNumber.isRunning then
+  Begin
+    MensagemPadrao('Mensagem de Alerta','A T E N Ç Ã O!.'+EOLN+EOLN+
+                    'Para fechar é necessário parar o processo.' + EOLN,
+                    ['OK'],[bEscape],mpAlerta);
+    CanClose := False;
+  End;
+
+end;
+
 
 procedure TTasSerialNumberRecord.IniciaVariaveis;
 begin
@@ -212,12 +244,6 @@ begin
 
 end;
 
-procedure TTasSerialNumberRecord.onterminateProcess(Sender: TObject);
-begin
-  E_qtty_record.ReadOnly := False;
-  E_SH.ReadOnly := False;
-  E_LN.ReadOnly := False;
-end;
 
 procedure TTasSerialNumberRecord.SB_Sair_0Click(Sender: TObject);
 begin
@@ -255,10 +281,6 @@ end;
 
 procedure TTasSerialNumberRecord.StartProcess;
 begin
-  E_qtty_record.ReadOnly := True;
-  E_SH.ReadOnly := True;
-  E_LN.ReadOnly := True;
-
   FRecordSerialNumber := nil;
   FRecordSerialNumber := TThRecordSerialNumber.Create;
   FRecordSerialNumber.OnTerminate := FinalizarOperacao;
@@ -271,9 +293,14 @@ begin
   FRecordSerialNumber.SerialSH := E_SH.text;
   FRecordSerialNumber.SerialLN := E_LN.text;
   FRecordSerialNumber.FreeOnTerminate := true;
-  FRecordSerialNumber.OnTerminate := onterminateProcess;
-  FRecordSerialNumber.Start;
-
+  try
+    FRecordSerialNumber.Start;
+  except
+    on E:Exception do
+      MensagemPadrao('Mensagem de erro','A T E N Ç Ã O!.'+EOLN+EOLN+
+                      E.Message + EOLN,
+                    ['OK'],[bEscape],mpErro);
+  end;
 end;
 
 procedure TTasSerialNumberRecord.StopProcess;
@@ -398,8 +425,6 @@ begin
         WinExec(PAnsiChar(UTF8String(Lc_Ezecad)),SW_NORMAL);
       End;
     End;
-    Result := False;
-    exit;
   End;
 end;
 

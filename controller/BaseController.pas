@@ -4,7 +4,7 @@ interface
 
 uses System.Classes,System.SysUtils, FireDAC.Comp.Client, FireDAC.Stan.Param,
     System.Generics.Collections,GenericOrm, FireDAC.DApt ,
-    FireDAC.UI.Intf,  FireDAC.Comp.UI;
+    FireDAC.UI.Intf,  FireDAC.Comp.UI, Vcl.Forms;
 
 Type
 
@@ -25,7 +25,7 @@ Type
     procedure _getByKey<T: class>(Obj: T);
 
     function existObj<T: class>(Obj: T):Boolean;
-    Procedure geralog(origem,msg : string);Virtual;
+
     procedure get<T: class>(Qry: TFdQuery;Obj: T);
     function dataMysql(data:String) : String;
 
@@ -42,6 +42,7 @@ Type
     Function ConverteDataMysql(Data:TDateTime) : String;
     procedure ClonarObj<T: class>(ObjOri: T;ObjClone: T);
     function getDataSQLServer:TDateTime;
+    Procedure geralog(origem,msg : string);
   End;
 
 implementation
@@ -178,7 +179,8 @@ end;
 
 procedure TBaseController.geralog(origem,msg : string);
 begin
-
+  exit;
+  TGenericOrm._geralog(origem,msg);
 end;
 
 procedure TBaseController.get<T>(Qry: TFDQuery; Obj: T);

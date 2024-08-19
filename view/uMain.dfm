@@ -271,6 +271,7 @@ inherited Main: TMain
     end
   end
   object AppEvents: TApplicationEvents
+    OnException = AppEventsException
     OnHint = AppEventsHint
     Left = 16
     Top = 112

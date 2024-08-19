@@ -2,6 +2,7 @@ inherited TasSerialNumberRecord: TTasSerialNumberRecord
   Caption = 'Grava'#231#227'o de N'#250'mero Serial'
   ClientHeight = 500
   ClientWidth = 847
+  OnCloseQuery = FormCloseQuery
   ExplicitWidth = 853
   ExplicitHeight = 549
   PixelsPerInch = 96
@@ -18,7 +19,7 @@ inherited TasSerialNumberRecord: TTasSerialNumberRecord
     object Label1: TLabel
       Left = 2
       Top = 2
-      Width = 430
+      Width = 843
       Height = 19
       Align = alTop
       Alignment = taCenter
@@ -32,6 +33,7 @@ inherited TasSerialNumberRecord: TTasSerialNumberRecord
       ParentColor = False
       ParentFont = False
       Transparent = False
+      ExplicitWidth = 430
     end
     object DBGrid1: TDBGrid
       Left = 2
@@ -502,7 +504,6 @@ inherited TasSerialNumberRecord: TTasSerialNumberRecord
     BevelInner = bvRaised
     BevelOuter = bvLowered
     TabOrder = 3
-    ExplicitTop = 383
     object Lb_qtty_record: TLabel
       AlignWithMargins = True
       Left = 4
@@ -670,6 +671,7 @@ inherited TasSerialNumberRecord: TTasSerialNumberRecord
     ReceiveMode = rmRAW
     Terminator = '#13#10'
     OnPortOpen = ComPortPortOpen
+    OnPortClose = ComPortPortClose
     ReceiveCallBack = ComPortReceiveCallBack
     Left = 89
     Top = 277

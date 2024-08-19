@@ -36,7 +36,6 @@ type
     procedure InsereClientDataSet;
     procedure AtualizaClientDataSet;
     procedure GerarArquivoNumeroSerial(lista:TListSerialNumber);
-    procedure DeletaArquivoNumeroSerial;
     procedure setFGravacaoPorCiclo(const Value: Integer);
     procedure setFSerialSH(const Value: String);
     procedure setFSerialLN(const Value: String);
@@ -46,6 +45,7 @@ type
     constructor Create();
     destructor Destroy; override;
     procedure stop;
+    function isRunning:boolean;
     procedure Execute;override;
     procedure ReceiveCallBack(Valor: String);
 
@@ -63,7 +63,7 @@ implementation
 
 { TThreadLoadGeneral }
 
-uses Un_DM, env;
+uses Un_DM, env, UnFunctions;
 
 procedure TThRecordSerialNumber.AtualizaClientDataSet;
 begin
@@ -110,16 +110,6 @@ begin
   FNorma := TControllerProductSerialNorma.Create(nil);
 end;
 
-procedure TThRecordSerialNumber.DeletaArquivoNumeroSerial;
-var
-  Lc_file_name:String;
-  Lc_file_path : String;
-begin
-  Lc_file_name := 'qrcode.txt';
-  Lc_file_path := concat(GbPathExe + Lc_file_name);
-  if FileExists(Lc_file_path) then
-    DeleteFile(PChar(Lc_file_path));
-end;
 
 destructor TThRecordSerialNumber.Destroy;
 begin
@@ -136,6 +126,9 @@ Var
 begin
   while not Terminated do
   begin
+    //Deleta o arquivo para garantir que o processo será do zero
+    DeletaArquivoNumeroSerial;
+
     // Aguarda o sinal de prontidão da gravadora
     FProcessamento.Caption := 'Aguardando Fechamento do Compartimento.';
     repeat
@@ -146,8 +139,10 @@ begin
 
     if Terminated then
       Break;
+
     // Geração do número serial
     FProcessamento.Caption := 'Gerando Serial no Banco de Dados.';
+
     //inicia o loop (implementação
     FlistaSerialNumber.Clear;
     for I := 1 to FGravacaoPorCiclo do
@@ -170,24 +165,20 @@ begin
         );
       Sleep(200);
     End;
-
-    FProcessamento.Caption := 'Aguardando gravação física na peça.';
-
-    {Envia Sinal para o equipamento de gração}
-    //FPortaCom.send( FSerialNumber.Registro.Number  );       //+ #13#10
-    //Deleta o arquivo para garantir que o processo será do zero
-    DeletaArquivoNumeroSerial;
     //Gera o arquivo para a gravadora ler
     GerarArquivoNumeroSerial(FlistaSerialNumber);
-    Sleep(100);
+    Sleep(300);
+
     {Aguardando a abertura da Tampa e envio do sinal para Atualizar}
     FDadoRecebido := '1';
     FProcessamento.Caption := 'Aguardando finalização da gravação.';
     repeat
       Sleep(100);
     until (FDadoRecebido = '0');
+
     //Deletar o arquivo para que o gravadora não leia o arquivo em outro momento
     DeletaArquivoNumeroSerial;
+
     //Atualizar a situação do processo de gravação
     for I := 0 to FlistaSerialNumber.Count-1 do
     Begin
@@ -206,6 +197,7 @@ begin
       FClienteDataSet.Next;
     End;
     FClienteDataSet.Last;
+
   end;
 end;
 
@@ -282,6 +274,11 @@ begin
     Historico.Registro.Descricao      := '';
     Historico.insert;
   End;
+end;
+
+function TThRecordSerialNumber.isRunning: boolean;
+begin
+  result := not Terminated;
 end;
 
 procedure TThRecordSerialNumber.InsereClientDataSet;

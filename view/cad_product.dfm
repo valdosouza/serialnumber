@@ -92,7 +92,6 @@ inherited CadProduct: TCadProduct
       Font.Name = 'Arial'
       Font.Style = []
       ParentFont = False
-      Visible = False
     end
     object Lb_PartNumber_02: TLabel
       Left = 403
@@ -226,7 +225,6 @@ inherited CadProduct: TCadProduct
       Font.Style = []
       ParentFont = False
       TabOrder = 3
-      Visible = False
     end
     object E_PartNumber_02: TEdit
       Left = 397

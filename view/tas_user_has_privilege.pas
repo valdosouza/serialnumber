@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, un_base, Vcl.Menus, Data.DB, Datasnap.DBClient,
-  uniBasicGrid, uniDBGrid, un_dm,   Vcl.Buttons, Vcl.Grids, Vcl.DBGrids, Vcl.ExtCtrls,
+  un_dm,   Vcl.Buttons, Vcl.Grids, Vcl.DBGrids, Vcl.ExtCtrls,
   Vcl.StdCtrls, Vcl.CheckLst, ControllerUser;
 
 type
@@ -156,7 +156,6 @@ begin
   inherited;
   Close;
 end;
-
 
 procedure TTasUserHasPrivilege.IniciaVariaveis;
 begin

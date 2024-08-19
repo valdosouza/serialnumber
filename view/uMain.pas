@@ -5,8 +5,7 @@ interface
 uses
   Winapi.Windows, Un_Base, Vcl.ExtCtrls, Vcl.AppEvnts, Vcl.ComCtrls,
   Vcl.Controls, Vcl.StdCtrls, Vcl.Mask, Vcl.Buttons, Vcl.Menus, System.Classes,
-  ControllerUser,ControllerInstitution, tas_serial_number_record, Vcl.Forms,
-  System.SysUtils, Vcl.Graphics;
+  Vcl.Forms,  System.SysUtils, Vcl.Graphics;
 
 type
   TMain = class(TFr_Base)
@@ -42,8 +41,10 @@ type
     procedure RegistroSerial1Click(Sender: TObject);
     procedure rocadeSenha1Click(Sender: TObject);
     procedure Config1Click(Sender: TObject);
+    procedure AppEventsException(Sender: TObject; E: Exception);
 
   private
+   procedure ChamarTela(FormClass: TFormClass);
     procedure resolution;
     procedure OnMessageOwn(var Msg: TMsg; var Handled: Boolean);
     procedure FillUserCombo(Lista: TComboBox);
@@ -67,11 +68,15 @@ implementation
 
 {$R *.dfm}
 
-uses sea_product, sea_user, Un_Msg, cad_img_product,
-  sea_serial_number, tas_change_password, env,tas_config;
+uses sea_product, sea_user, Un_Msg, cad_img_product, sea_serial_number,
+      tas_change_password, env,tas_config,ControllerUser,ControllerInstitution,
+      tas_serial_number_record, UnFunctions;
 
-
-
+procedure TMain.AppEventsException(Sender: TObject; E: Exception);
+begin
+  inherited;
+  DeletaArquivoNumeroSerial;
+end;
 
 procedure TMain.AppEventsHint(Sender: TObject);
 begin
@@ -79,45 +84,36 @@ begin
 end;
 
 procedure TMain.CadastrodeProdutos1Click(Sender: TObject);
-Var
-  Lc_Form : TSeaProduct;
 Begin
   if getPrivilege('Cadastro Produto','VISUALIZAR') then
   Begin
-    Lc_Form := TSeaProduct.Create(self);
-    try
-      Lc_Form.ShowModal
-    finally
-      Lc_Form.DisposeOf;
-    end;
+    ChamarTela(TSeaProduct);
   End;
 end;
 
 procedure TMain.CadastrodeUsuariosClick(Sender: TObject);
-Var
-  Lc_Form : TSeaUSer;
 Begin
   if getPrivilege('Cadastro Usuário','VISUALIZAR') then
   Begin
-    Lc_Form := TSeaUSer.Create(self);
-    try
-      Lc_Form.ShowModal
-    finally
-      Lc_Form.DisposeOf;
-    end;
+    ChamarTela(TSeaUSer);
   End;
 end;
 
-procedure TMain.Config1Click(Sender: TObject);
-Var
-  Lc_Form : TTasConfig;
-Begin
-  Lc_Form := TTasConfig.Create(self);
+procedure TMain.ChamarTela(FormClass: TFormClass);
+var
+  Lc_form: TForm;
+begin
+  Lc_form := FormClass.Create(Self);
   try
-    Lc_Form.ShowModal
+    Lc_form.ShowModal;
   finally
-    Lc_Form.DisposeOf;
+    FreeAndNil(Lc_form);
   end;
+end;
+
+procedure TMain.Config1Click(Sender: TObject);
+Begin
+  ChamarTela(TTasConfig);
 end;
 
 procedure TMain.CriarVariaveis;
@@ -245,17 +241,10 @@ begin
 end;
 
 procedure TMain.RegistroSerial1Click(Sender: TObject);
-Var
-  Lc_Form : TSeaSerialNumber;
 begin
   if getPrivilege('Registro Serial','VISUALIZAR') then
   Begin
-    Lc_Form := TSeaSerialNumber.Create(self);
-    try
-      Lc_Form.ShowModal;
-    finally
-      Lc_Form.DisposeOf;
-    end;
+    ChamarTela(TSeaSerialNumber);
   End;
 end;
 
@@ -268,16 +257,8 @@ begin
 end;
 
 procedure TMain.rocadeSenha1Click(Sender: TObject);
-Var
-  Lc_form : TTasChangePassword;
 begin
-  Lc_form := TTasChangePassword.Create(self);
-  try
-    Lc_form.ShowModal;
-  finally
-    Lc_form.DisposeOf;
-  end;
-
+  ChamarTela(TTasChangePassword);
 end;
 
 procedure TMain.Sair2Click(Sender: TObject);

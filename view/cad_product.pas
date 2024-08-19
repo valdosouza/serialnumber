@@ -443,6 +443,9 @@ function TCadProduct.VerificaExistenciaReferencia: Boolean;
 Var
   LcProduct : TControllerProduct;
 begin
+  Result := False;
+  exit;
+  //Retirada pois o fornecedor pode ter codigos iguais - Solicitante  - Luis da Metalkraft/Robson
   LcProduct := TControllerProduct.Create(self);
   try
     LcProduct.Registro.Codigo := Product.Registro.Codigo;

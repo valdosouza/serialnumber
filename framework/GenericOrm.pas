@@ -23,7 +23,7 @@ type
       class function _getNextByField<T: class>(Obj: T;Field:String;Intitution:String):String;
       class function _getLastInsert<T: class>(Obj: T):String;
       class procedure _get<T: class>(Qry:TFDQuery;Obj: T);
-      class Procedure _geralog(acesso : string);
+      class Procedure _geralog(origem,msg : string);
   end;
 
 implementation
@@ -203,7 +203,7 @@ Begin
     strSelect := strSelect + strWhere ;
     Result := strSelect;
   Except on E: Exception do
-    _geralog(concat('GenericDao - Select ',E.Message));
+    _geralog('GenericORM - Select',E.Message);
   end;
 End;
 
@@ -231,20 +231,19 @@ begin
         begin
           //Monta o sql com campos preenchidos
           Lc_Value := TGenericOrm.GetValues(Obj,Prop);
-          if (Trim(Lc_Value) <> '''''') then
+          if (FieldName(Atributo).Name = 'created_at') or
+             (FieldName(Atributo).Name = 'updated_at')  then
           Begin
             strFields := strFields + FieldName(Atributo).Name  + ',';
-            strParams := strParams + Lc_Value + ',';
+            strParams := strParams + 'SYSDATETIME()' + ','
           End
           else
           Begin
-            if (FieldName(Atributo).Name = 'created_at') or
-               (FieldName(Atributo).Name = 'updated_at')  then
+            if (Trim(Lc_Value) <> '''''') then
             Begin
-               strFields := strFields + FieldName(Atributo).Name  + ',';
-               strParams := strParams + 'SYSDATETIME()' + ','
-            End;
-
+              strFields := strFields + FieldName(Atributo).Name  + ',';
+              strParams := strParams + Lc_Value + ',';
+            End
           End;
         end;
       end;
@@ -254,7 +253,7 @@ begin
     strInsert := strInsert + ' ( ' + strFields + ' ) VALUES ( ' + strParams + ' )';
     REsult := strInsert;
   Except on E: Exception do
-    _geralog(concat('GenericDao - Insert - ',E.Message));
+    _geralog('GenericORM - Insert',E.Message);
   end;
 
 end;
@@ -327,7 +326,7 @@ begin
     strReplace := concat(strReplace , ' MATCHING ( ' , StrKeys , ' );');
     REsult := strReplace;
   Except on E: Exception do
-    _geralog(concat('GenericDao - Insert - ',E.Message));
+    _geralog('GenericORM - Insert',E.Message);
   end;
 
 end;
@@ -372,25 +371,25 @@ begin
             if Atributo is FieldName then
             begin
               Lc_Value := TGenericOrm.GetValues(Obj,Prop);
-              if (Trim(Lc_Value) <> '''''') or (FieldName(Atributo).Name = 'updated_at') then
+              if not (FieldName(Atributo).Name = 'created_at') then
               Begin
-                strFields := FieldName(Atributo).Name;
                 if (FieldName(Atributo).Name = 'updated_at') then
-                  strParams := 'SYSDATETIME()'
-                  //strParams := ''''+ formatdatetime('yyyy-mm-dd hh:nn:ss', Now)+''''
-                else
-                  strParams := Lc_Value;
-                strUpdate := strUpdate + strFields + ' = ' + strParams + ',';
-              End
-              else
-              Begin
-                //Quando é branco enviaar null
-                //PRecisamos desta parte por que o usuario deve ter a opção de hora informar um dado e outra hora retira-lo
-                if not (FieldName(Atributo).Name = 'created_at') then
                 Begin
-                  strFields := FieldName(Atributo).Name;
-                  strParams := Lc_Value;
-                  strUpdate := strUpdate + strFields + ' = null ,';
+                  if (FieldName(Atributo).Name = 'updated_at')  then
+                  Begin
+                    strFields := FieldName(Atributo).Name;
+                    strParams := 'SYSDATETIME()';
+                    strUpdate := strUpdate + strFields + ' = ' + strParams + ',';
+                  End;
+                End
+                else
+                Begin
+                  if (Trim(Lc_Value) <> '''''') then
+                  Begin
+                    strFields := FieldName(Atributo).Name;
+                    strParams := Lc_Value;
+                    strUpdate := strUpdate + strFields + ' = ' + strParams + ',';
+                  end;
                 End;
               End;
             End
@@ -402,7 +401,7 @@ begin
     strUpdate := strUpdate + strWhere;
     Result := strUpdate;
   Except on E: Exception do
-    _geralog(concat('GenericDao - Update - ',E.Message));
+    _geralog('GenericORM - Update',E.Message);
   end;
 end;
 
@@ -443,7 +442,7 @@ begin
     strDelete := strDelete + strWhere;
     Result := strDelete;
   Except on E: Exception do
-    _geralog(concat('GenericDao - Delete - ',E.Message));
+    _geralog('GenericORM - Delete',E.Message);
   end;
 
 end;
@@ -513,28 +512,33 @@ begin
 end;
 
 
-class procedure TGenericOrm._geralog(acesso: string);
+class procedure TGenericOrm._geralog(origem,msg: string);
 var
   Arq : TextFile;
   Data : String;
   LcArq : String;
   LcDir : String;
+  Lc_DateTime : String;
 begin
-  {$IFNDEF ANDROID}
   Data := DateToStr(Now);
   Data := StringReplace(Data,'/','-',[rfReplaceAll]);
   LcDir := Concat(ExtractFilePath(ParamStr(0)),'log\');
   IF not (DirectoryExists(LcDir)) then ForceDirectories(LcDir);
   LcArq := Concat(LcDir,Data ,'.log');
   AssignFile(Arq, LcArq );
-  if not FileExists( LcArq ) then
-    Rewrite(arq, LcArq)
-  else
-    Append(arq);
-  Writeln(Arq, concat(DateTimeToStr(Now),acesso));
-  Writeln(Arq, '');
-  CloseFile(Arq);
-  {$ENDIF ANDROID}
+  Try
+    if not FileExists( LcArq ) then
+      Rewrite(arq, LcArq)
+    else
+      Append(arq);
+    Lc_DateTime := DateTimeToStr(Now);
+    Writeln(Arq, concat(Lc_DateTime , ' - ' , Origem , ' - ' , msg));
+    Flush(Arq);  { ensures that the text was actusally written to file }
+                    { insert code here that would require a Flush before closing the file }
+  Finally
+    CloseFile(arq);
+  End;
+
 end;
 
 class function TGenericOrm._getLastInsert<T>(Obj: T):String;
@@ -569,7 +573,7 @@ begin
       end;
     end;
   Except on E: Exception do
-    _geralog(concat('GenericDao - get - ',E.Message));
+    _geralog('GenericORM - get',E.Message);
   end;
 end;
 

@@ -17,10 +17,15 @@ Uses System.SysUtils, Vcl.Grids, System.Classes, Winapi.Windows,
   function ValidaUserPassword:boolean;
   function criptografar(const key, texto: String): String;
   function descriptografar(const key, texto: String): String;
+  procedure DeletaArquivoNumeroSerial;
+
+
 const
   EOLN  = #13;
 
 implementation
+
+uses env;
 
 
 procedure LimpaStringGrid(Grid : TStringGrid);
@@ -262,6 +267,17 @@ begin
       C := Chr(Byte(Key[1 + (I mod Length(Key))]) xor Byte(C));
     Result := Result + C;
   end;
+end;
+
+procedure DeletaArquivoNumeroSerial;
+var
+  Lc_file_name:String;
+  Lc_file_path : String;
+begin
+  Lc_file_name := 'qrcode.txt';
+  Lc_file_path := concat(GbPathExe + Lc_file_name);
+  if FileExists(Lc_file_path) then
+    DeleteFile(PChar(Lc_file_path));
 end;
 
 end.

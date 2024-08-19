@@ -1,4 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
-	<Transactions/>
+	<Transactions>
+    <Transaction>2024/07/30 15:47:45.000.603,=D:\serialnumber\view\cad_img_product.pas</Transaction>
+    <Transaction>2024/07/30 15:47:45.000.925,=D:\serialnumber\view\cad_product.pas</Transaction>
+    <Transaction>2024/07/30 15:47:46.000.614,=D:\serialnumber\view\cfg_device.pas</Transaction>
+    <Transaction>2024/07/30 15:47:46.000.225,=D:\serialnumber\view\cad_user.pas</Transaction>
+    <Transaction>2024/07/30 15:47:47.000.904,=D:\serialnumber\view\sea_product.pas</Transaction>
+    <Transaction>2024/07/30 15:47:48.000.887,=D:\serialnumber\view\tas_change_password.pas</Transaction>
+    <Transaction>2024/07/30 15:47:48.000.666,=D:\serialnumber\view\sea_user.pas</Transaction>
+    <Transaction>2024/07/30 15:47:48.000.377,=D:\serialnumber\view\sea_serial_number.pas</Transaction>
+    <Transaction>2024/07/30 15:47:49.000.355,=D:\serialnumber\view\tas_serial_number_check.pas</Transaction>
+    <Transaction>2024/07/30 15:47:49.000.858,=D:\serialnumber\view\tas_serial_number_record.pas</Transaction>
+    <Transaction>2024/07/30 15:47:50.000.385,=D:\serialnumber\view\un_connection_data.pas</Transaction>
+    <Transaction>2024/07/30 15:47:50.000.138,=D:\serialnumber\view\tas_user_has_privilege.pas</Transaction>
+    <Transaction>2024/08/10 15:29:00.000.234,=D:\serialnumber\env.pas</Transaction>
+  </Transactions>
 </BorlandProject>

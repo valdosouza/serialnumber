@@ -101,9 +101,6 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="view\uMain.pas">
-            <Form>Main</Form>
-        </DCCReference>
         <DCCReference Include="un_dm.pas">
             <Form>DM</Form>
             <DesignClass>TDataModule</DesignClass>
@@ -122,7 +119,22 @@
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="helper\UnFunctions.pas"/>
-        <DCCReference Include="helper\env.pas"/>
+        <DCCReference Include="view\cad_img_product.pas">
+            <Form>CadImgProduct</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="view\cad_product.pas">
+            <Form>CadProduct</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="view\cad_user.pas">
+            <Form>CadUser</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="view\cfg_device.pas">
+            <Form>CfgDevice</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <DCCReference Include="view\lis_frame_product.pas">
             <Form>listFrameProduct</Form>
             <FormType>dfm</FormType>
@@ -133,10 +145,47 @@
             <FormType>dfm</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
+        <DCCReference Include="view\sea_product.pas">
+            <Form>SeaProduct</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="view\sea_serial_number.pas">
+            <Form>SeaSerialNumber</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="view\sea_user.pas">
+            <Form>SeaUSer</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="view\tas_change_password.pas">
+            <Form>TasChangePassword</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <DCCReference Include="view\tas_config.pas">
             <Form>TasConfig</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="view\tas_serial_number_check.pas">
+            <Form>TasSerialNumberCheck</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="view\tas_serial_number_record.pas">
+            <Form>TasSerialNumberRecord</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="view\tas_user_has_privilege.pas">
+            <Form>TasUserHasPrivilege</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="view\uMain.pas">
+            <Form>Main</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="view\un_connection_data.pas">
+            <Form>Fr_ConnectionData</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="env.pas"/>
         <None Include="ModelSupport_serial_number\default.txaPackage"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
@@ -164,9 +213,9 @@
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="3">
-                <DeployFile LocalName="bin\serial_number.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="ModelSupport_serial_number\default.txaPackage" Configuration="Debug" Class="ProjectFile">
                     <Platform Name="Win32">
-                        <RemoteName>serial_number.exe</RemoteName>
+                        <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
@@ -186,9 +235,9 @@
                 </DeployFile>
                 <DeployFile LocalName="bin\serial_number.exe" Configuration="Debug" Class="ProjectOutput"/>
                 <DeployFile LocalName="bin\serial_number.exe" Configuration="Release" Class="ProjectOutput"/>
-                <DeployFile LocalName="ModelSupport_serial_number\default.txaPackage" Configuration="Debug" Class="ProjectFile">
+                <DeployFile LocalName="bin\serial_number.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
-                        <RemoteDir>.\</RemoteDir>
+                        <RemoteName>serial_number.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
